@@ -1,12 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from statistics import mean
-import sqlite3
 import time
-from datetime import date
 
 list_of_products = input('Please provide last part of link tme.cn/tme.hk category: ')
+
 
 # generating list of xpaths for prices on tme.cn
 def generate_xpath_list():
@@ -38,9 +36,9 @@ close_cookies.click()
 in_stock = driver.find_element(By.ID, "in_stock_filter")
 in_stock.click()
 # waiting for page to load
-time.sleep(10)
+time.sleep(3)
 
-#running test for each consecutive price
+# running test for each consecutive price
 price1 = driver.find_element(By.XPATH, xpath1).text
 price2 = driver.find_element(By.XPATH, xpath2).text
 assert price1 > price2
