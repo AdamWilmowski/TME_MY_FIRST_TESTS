@@ -21,7 +21,7 @@ result = generate_xpath_list()
 
 # change each element from xpath list into variable
 for i, element in enumerate(result):
-    xpath_name = f"xpath{i + 1}"
+    xpath_name = f"xpath_{i + 1}"
     exec(f"{xpath_name} = '{element}'")
 
 # setting up chrome webdriver
