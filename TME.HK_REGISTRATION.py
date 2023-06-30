@@ -30,31 +30,23 @@ xpath_8 = '/html/body/div[1]/section[2]/div/form/div[10]/div'
 xpath_9 = '/html/body/div[1]/section[2]/div/form/div[11]/div'
 xpath_10 = '/html/body/div[1]/section[2]/div/form/div[12]/div'
 
-obligatory_validation_1 = driver.find_element(By.XPATH, xpath_1)
-obligatory_validation_2 = driver.find_element(By.XPATH, xpath_2)
-obligatory_validation_3 = driver.find_element(By.XPATH, xpath_3)
-obligatory_validation_4 = driver.find_element(By.XPATH, xpath_4)
-obligatory_validation_5 = driver.find_element(By.XPATH, xpath_5)
-obligatory_validation_6 = driver.find_element(By.XPATH, xpath_6)
-obligatory_validation_7 = driver.find_element(By.XPATH, xpath_7)
-obligatory_validation_8 = driver.find_element(By.XPATH, xpath_8)
-obligatory_validation_9 = driver.find_element(By.XPATH, xpath_9)
-obligatory_validation_10 = driver.find_element(By.XPATH, xpath_10)
-
 for i in range(1, 11):
-    variable_name = 'obligatory_validation_' + str(i)
-    if globals().get(variable_name).is_displayed and globals().get(variable_name).text == 'This field is obligatory':
+    xpath = globals()["xpath_" + str(i)]
+    obligatory_validation = driver.find_element(By.XPATH, xpath)
+    if obligatory_validation.is_displayed() and obligatory_validation.text == 'This field is obligatory':
         print(f"OBLIGATORY VALIDATION {i} OK")
     else:
         print(f"OBLIGATORY VALIDATION {i} NOK")
 
 company_name = driver.find_element(By.ID, "app_company_user_company_name")
-company_name.send_keys("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+company_name.send_keys("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
+                       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 company_name.send_keys(Keys.ENTER)
 time.sleep(2)
 length_validation_company = driver.find_element(By.XPATH, xpath_1)
 
-if length_validation_company.is_displayed() and length_validation_company.text == 'The maximum length for the "Company" field is 120 characters.':
+if length_validation_company.is_displayed() and length_validation_company.text == 'The maximum length for the ' \
+                                                                                  '"Company" field is 120 characters.':
     print("COMPANY MAX LENGTH OK")
 else:
     print("COMPANY MAX LENGTH NOK")
@@ -63,6 +55,7 @@ driver.refresh()
 time.sleep(2)
 
 company_name = driver.find_element(By.ID, "app_company_user_company_name")
+company_name.clear()
 company_name.send_keys("數產生ZHZH")
 company_name.send_keys(Keys.ENTER)
 time.sleep(2)
@@ -72,4 +65,23 @@ if length_validation_company.is_displayed() and length_validation_company.text =
     print("COMPANY LATIN ONLY OK")
 else:
     print("COMPANY LATIN ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_email = driver.find_element(By.ID, "app_company_user_company_email")
+company_email.send_keys("xx.cc")
+company_email.send_keys(Keys.ENTER)
+time.sleep(2)
+format_email_validation = driver.find_element(By.XPATH, xpath_2)
+
+if format_email_validation.is_displayed() and format_email_validation.text == "Invalid format. Please enter a " \
+                                                                                  "valid e-mail address, for example " \
+                                                                                  "smith@domain.cn":
+    print("COMPANY EMAIL FORMAT ONLY OK")
+else:
+    print("COMPANY EMAIL FORMAT NOK")
+
+
+
 
