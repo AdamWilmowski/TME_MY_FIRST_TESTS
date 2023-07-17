@@ -383,3 +383,61 @@ if user_phone_max_validation.is_displayed() and user_phone_max_validation.text =
 else:
     print("USER PHONE NUMBER MAX LENGTH NOK")
 
+driver.refresh()
+time.sleep(2)
+
+user_name = driver.find_element(By.ID, field_10)
+user_name.clear()
+user_name.send_keys("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+user_name.send_keys(Keys.ENTER)
+time.sleep(2)
+user_name_max_length = driver.find_element(By.XPATH, xpath_10)
+
+if user_name_max_length.is_displayed() and user_name_max_length.text == 'The maximum length for the "First Name" ' \
+                                                                        'field is 35 characters.':
+    print("USER NAME MAX LENGTH OK")
+else:
+    print("USER NAME MAX LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+user_name = driver.find_element(By.ID, field_10)
+user_name.clear()
+user_name.send_keys("數產生")
+user_name.send_keys(Keys.ENTER)
+time.sleep(2)
+user_name_latin_only = driver.find_element(By.XPATH, xpath_10)
+
+if user_name_latin_only.is_displayed() and user_name_latin_only.text == 'Please use only latin characters.':
+    print("USER NAME LATIN ONLY OK")
+else:
+    print("USER NAME LATIN ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+user_surname = driver.find_element(By.ID, field_11)
+user_surname.clear()
+user_surname.send_keys("數產生")
+user_surname.send_keys(Keys.ENTER)
+time.sleep(2)
+user_surname_latin_only = driver.find_element(By.XPATH, xpath_11)
+
+if user_surname_latin_only.is_displayed() and user_surname_latin_only.text == 'Please use only latin characters.':
+    print("USER SURNAME LATIN ONLY OK")
+else:
+    print("USER SURNAME LATIN ONLY NOK")
+
+user_surname = driver.find_element(By.ID, field_11)
+user_surname.clear()
+user_surname.send_keys("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+user_surname.send_keys(Keys.ENTER)
+time.sleep(2)
+user_surname_max_length = driver.find_element(By.XPATH, xpath_11)
+
+if user_surname_max_length.is_displayed() and user_surname_max_length.text == 'The maximum length for the "First ' \
+                                                                              'Name" field is 35 characters.':
+    print("USER SURNAME MAX LENGTH OK")
+else:
+    print("USER SURNAME MAX LENGTH NOK")
