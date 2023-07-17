@@ -372,7 +372,7 @@ time.sleep(2)
 
 user_phone_number = driver.find_element(By.ID, field_9)
 user_phone_number.clear()
-user_phone_number.send_keys("123456789101213")
+user_phone_number.send_keys("1234567891012134")
 user_phone_number.send_keys(Keys.ENTER)
 time.sleep(2)
 user_phone_max_validation = driver.find_element(By.XPATH, xpath_9)
