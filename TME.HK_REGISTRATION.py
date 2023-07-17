@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
+
 
 
 from selenium.webdriver.support.ui import WebDriverWait
@@ -32,7 +34,7 @@ xpath_10 = '/html/body/div[1]/section[2]/div/form/div[12]/div'
 
 field_1 = 'app_company_user_company_name'
 field_2 = 'app_company_user_company_email'
-field_3 = 'app_company_user_company_email'
+field_3 = 'app_company_user_company_phoneNumber'
 field_4 = 'app_company_user_company_city'
 field_5 = 'app_company_user_company_street'
 field_6 = 'app_company_user_company_postcode'
@@ -157,7 +159,7 @@ company_phone_max_validation = driver.find_element(By.XPATH, xpath_3)
 
 if company_phone_max_validation.is_displayed() and company_phone_max_validation.text == 'The maximum length for the ' \
                                                                                         '"Phone Number" field is 15 ' \
-                                                                                        'digits"':
+                                                                                        'digits."':
     print("COMPANY PHONE NUMBER MAX LENGTH OK")
 else:
     print("COMPANY PHONE NUMBER MAX LENGTH NOK")
@@ -167,17 +169,110 @@ time.sleep(2)
 
 company_city = driver.find_element(By.ID, field_4)
 company_city.clear()
-company_city.send_keys("1234567891011121314")
+company_city.send_keys("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 company_city.send_keys(Keys.ENTER)
 time.sleep(2)
-company_phone_max_validation = driver.find_element(By.XPATH, xpath_3)
+city_max_length = driver.find_element(By.XPATH, xpath_4)
 
-if company_phone_max_validation.is_displayed() and company_phone_max_validation.text == 'The maximum length for the ' \
-                                                                                        '"Phone Number" field is 15 ' \
-                                                                                        'digits"':
-    print("COMPANY PHONE NUMBER MAX LENGTH OK")
+if city_max_length.is_displayed() and city_max_length.text == 'The maximum length for the "City" field is 35 ' \
+                                                              'characters.':
+    print("CITY MAX LENGTH OK")
 else:
-    print("COMPANY PHONE NUMBER MAX LENGTH NOK")
+    print("CITY MAX LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_city = driver.find_element(By.ID, field_4)
+company_city.clear()
+company_city.send_keys("數產生")
+company_city.send_keys(Keys.ENTER)
+time.sleep(2)
+city_latin_only = driver.find_element(By.XPATH, xpath_4)
+
+if city_latin_only.is_displayed() and city_latin_only.text == "Please use only latin characters.":
+    print("CITY LATIN ONLY OK")
+else:
+    print("CITY LATIN ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_street = driver.find_element(By.ID, field_5)
+company_street.clear()
+company_street.send_keys("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+company_street.send_keys(Keys.ENTER)
+time.sleep(2)
+street_max_length = driver.find_element(By.XPATH, xpath_5)
+
+if street_max_length.is_displayed() and street_max_length.text == 'The maximum length for the "Street Address" field ' \
+                                                                  'is 70 ' \
+                                                              'characters.':
+    print("STREET MAX LENGTH OK")
+else:
+    print("STREET MAX LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_street = driver.find_element(By.ID, field_5)
+company_street.clear()
+company_street.send_keys("數產生")
+company_street.send_keys(Keys.ENTER)
+time.sleep(2)
+street_latin_only = driver.find_element(By.XPATH, xpath_5)
+
+if street_latin_only.is_displayed() and street_latin_only.text == 'Please use only latin characters.':
+    print("STREET LATIN ONLY OK")
+else:
+    print("STREET LATIN ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_zip = driver.find_element(By.ID, field_6)
+company_zip.clear()
+company_zip.send_keys("123")
+company_zip.send_keys(Keys.ENTER)
+time.sleep(2)
+zip_min_length = driver.find_element(By.XPATH, xpath_6)
+
+if zip_min_length.is_displayed() and zip_min_length.text == 'The field must contain 6 digits.':
+    print("ZIP MIN LENGTH OK")
+else:
+    print("ZIP MIN LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_zip = driver.find_element(By.ID, field_6)
+company_zip.clear()
+company_zip.send_keys("azx")
+company_zip.send_keys(Keys.ENTER)
+time.sleep(2)
+zip_numbers_only = driver.find_element(By.XPATH, xpath_6)
+
+if zip_numbers_only.is_displayed() and zip_numbers_only.text == 'This field is obligatory':
+    print("ZIP NUM ONLY OK")
+else:
+    print("ZIP NUM ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_zip = driver.find_element(By.ID, field_6)
+company_zip.clear()
+company_zip.send_keys("12345678910")
+company_zip.send_keys(Keys.ENTER)
+time.sleep(2)
+
+try:
+    driver.find_element(By.ID, xpath_6)
+    print("ZIP MAX LENGTH NOK")
+
+except NoSuchElementException:
+    print("ZIP MAX LENGTH OK")
+
 
 
 
