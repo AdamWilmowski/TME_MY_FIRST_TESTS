@@ -5,11 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-
-
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
 driver_service = Service(executable_path="C:\Webdriver\chromedriver.exe")
 driver = webdriver.Chrome(service=driver_service)
 
@@ -27,10 +22,11 @@ xpath_3 = '/html/body/div[1]/section[2]/div/form/div[3]/div'
 xpath_4 = '/html/body/div[1]/section[2]/div/form/div[5]/div/div'
 xpath_5 = '/html/body/div[1]/section[2]/div/form/div[6]/div'
 xpath_6 = '/html/body/div[1]/section[2]/div/form/div[7]/div/div'
-xpath_7 = '/html/body/div[1]/section[2]/div/form/div[9]/div'
-xpath_8 = '/html/body/div[1]/section[2]/div/form/div[10]/div'
-xpath_9 = '/html/body/div[1]/section[2]/div/form/div[11]/div'
-xpath_10 = '/html/body/div[1]/section[2]/div/form/div[12]/div'
+xpath_7 = '/html/body/div[1]/section[2]/div/form/div[8]/div'
+xpath_8 = '/html/body/div[1]/section[2]/div/form/div[9]/div'
+xpath_9 = '/html/body/div[1]/section[2]/div/form/div[10]/div'
+xpath_10 = '/html/body/div[1]/section[2]/div/form/div[11]/div'
+xpath_11 = '/html/body/div[1]/section[2]/div/form/div[12]/div'
 
 field_1 = 'app_company_user_company_name'
 field_2 = 'app_company_user_company_email'
@@ -44,13 +40,14 @@ field_9 = 'app_company_user_customer_phoneNumber'
 field_10 = 'app_company_user_customer_firstName'
 field_11 = 'app_company_user_customer_lastName'
 
-for i in range(1, 11):
-    xpath = globals()["xpath_" + str(i)]
-    obligatory_validation = driver.find_element(By.XPATH, xpath)
-    if obligatory_validation.is_displayed() and obligatory_validation.text == 'This field is obligatory':
-        print(f"OBLIGATORY VALIDATION {i} OK")
-    else:
-        print(f"OBLIGATORY VALIDATION {i} NOK")
+for i in range(1, 12):
+    if i != 7:
+        xpath = globals()["xpath_" + str(i)]
+        obligatory_validation = driver.find_element(By.XPATH, xpath)
+        if obligatory_validation.is_displayed() and obligatory_validation.text == 'This field is obligatory':
+            print(f"OBLIGATORY VALIDATION {i} OK")
+        else:
+            print(f"OBLIGATORY VALIDATION {i} NOK")
 
 company_name = driver.find_element(By.ID, "app_company_user_company_name")
 company_name.clear()
@@ -159,7 +156,7 @@ company_phone_max_validation = driver.find_element(By.XPATH, xpath_3)
 
 if company_phone_max_validation.is_displayed() and company_phone_max_validation.text == 'The maximum length for the ' \
                                                                                         '"Phone Number" field is 15 ' \
-                                                                                        'digits."':
+                                                                                        'digits.':
     print("COMPANY PHONE NUMBER MAX LENGTH OK")
 else:
     print("COMPANY PHONE NUMBER MAX LENGTH NOK")
@@ -273,14 +270,116 @@ try:
 except NoSuchElementException:
     print("ZIP MAX LENGTH OK")
 
+driver.refresh()
+time.sleep(2)
 
+user_job = driver.find_element(By.ID, field_7)
+user_job.clear()
+user_job.send_keys("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+user_job.send_keys(Keys.ENTER)
+time.sleep(2)
+job_max_length = driver.find_element(By.XPATH, xpath_7)
 
+if job_max_length.is_displayed() and job_max_length.text == 'The maximum length for the "Job title" field is 35 ' \
+                                                                'characters.':
+    print("JOB MAX LENGTH OK")
+else:
+    print("JOB MAX LENGTH NOK")
 
+driver.refresh()
+time.sleep(2)
 
+user_job = driver.find_element(By.ID, field_7)
+user_job.clear()
+user_job.send_keys("數產生")
+user_job.send_keys(Keys.ENTER)
+time.sleep(2)
+job_latin_only = driver.find_element(By.XPATH, xpath_7)
 
+if job_latin_only.is_displayed() and job_latin_only.text == 'Please use only latin characters.':
+    print("JOB LATIN ONLY OK")
+else:
+    print("JOB LATIN ONLY NOK")
 
+driver.refresh()
+time.sleep(2)
 
+user_email = driver.find_element(By.ID, field_8)
+user_email.clear()
+user_email.send_keys("xx.cc")
+user_email.send_keys(Keys.ENTER)
+time.sleep(2)
+format_email_user = driver.find_element(By.XPATH, xpath_8)
 
+if format_email_user.is_displayed() and format_email_user.text == "Invalid format. Please enter a " \
+                                                                                  "valid e-mail address, for example " \
+                                                                                  "smith@domain.cn":
+    print("USER EMAIL FORMAT ONLY OK")
+else:
+    print("USER EMAIL FORMAT NOK")
 
+driver.refresh()
+time.sleep(2)
 
+user_email = driver.find_element(By.ID, field_8)
+user_email.clear()
+user_email.send_keys("數產生")
+user_email.send_keys(Keys.ENTER)
+time.sleep(2)
+latin_email_user = driver.find_element(By.XPATH, xpath_8)
+
+if latin_email_user.is_displayed() and latin_email_user.text == "Please use only latin characters.":
+    print("USER EMAIL LATIN ONLY OK")
+else:
+    print("USER EMAIL LATIN ONLY NOK")
+
+driver.refresh()
+time.sleep(2)
+
+company_email = driver.find_element(By.ID, field_8)
+company_email.clear()
+company_email.send_keys("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
+                       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@XX.com")
+company_email.send_keys(Keys.ENTER)
+time.sleep(2)
+email_max_length_user = driver.find_element(By.XPATH, xpath_8)
+
+if email_max_length_user.is_displayed() and email_max_length_user.text == 'The maximum length for the ' \
+                                                                                      '"E-mail" ' \
+                                                                            'field is 64 characters.':
+    print("USER EMAIL MAX LENGTH OK")
+else:
+    print("USER EMAIL MAX LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+user_phone_number = driver.find_element(By.ID, field_9)
+user_phone_number.clear()
+user_phone_number.send_keys("1234567")
+user_phone_number.send_keys(Keys.ENTER)
+time.sleep(2)
+user_phone_min_validation = driver.find_element(By.XPATH, xpath_9)
+
+if user_phone_min_validation.is_displayed() and user_phone_min_validation.text == 'The field must contain a ' \
+                                                                                        'minimum of 11 digits.':
+    print("USER PHONE NUMBER MIN LENGTH OK")
+else:
+    print("USER PHONE NUMBER MIN LENGTH NOK")
+
+driver.refresh()
+time.sleep(2)
+
+user_phone_number = driver.find_element(By.ID, field_9)
+user_phone_number.clear()
+user_phone_number.send_keys("123456789101213")
+user_phone_number.send_keys(Keys.ENTER)
+time.sleep(2)
+user_phone_max_validation = driver.find_element(By.XPATH, xpath_9)
+
+if user_phone_max_validation.is_displayed() and user_phone_max_validation.text == 'The maximum length for the "Phone ' \
+                                                                                  'Number" field is 15 digits.':
+    print("USER PHONE NUMBER MAX LENGTH OK")
+else:
+    print("USER PHONE NUMBER MAX LENGTH NOK")
 
