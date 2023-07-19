@@ -49,6 +49,13 @@ for i in range(1, 12):
         else:
             print(f"OBLIGATORY VALIDATION {i} NOK")
 
+try:
+    driver.find_element(By.ID, xpath_7)
+    print("JOB NOT OBLIGATORY NOK")
+
+except NoSuchElementException:
+    print("JOB NOT OBLIGATORY OK")
+
 company_name = driver.find_element(By.ID, "app_company_user_company_name")
 company_name.clear()
 company_name.send_keys("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
@@ -436,7 +443,7 @@ user_surname.send_keys(Keys.ENTER)
 time.sleep(2)
 user_surname_max_length = driver.find_element(By.XPATH, xpath_11)
 
-if user_surname_max_length.is_displayed() and user_surname_max_length.text == 'The maximum length for the "First ' \
+if user_surname_max_length.is_displayed() and user_surname_max_length.text == 'The maximum length for the "Last ' \
                                                                               'Name" field is 35 characters.':
     print("USER SURNAME MAX LENGTH OK")
 else:
