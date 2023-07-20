@@ -17,9 +17,8 @@ sql = sqlite3.connect('TMEHK.db')
 cursor = sql.cursor()
 cursor.execute("SELECT value FROM used_values WHERE parameter='email';")
 email_value = cursor.fetchone()[0]
-cursor.execute(f"UPDATE used_values SET value = {chosen_value + 1}")
+cursor.execute(f"UPDATE used_values SET value = {email_value + 1}")
 sql.commit()
-sql.close()
 
 def get_random_value(length, type="string"):
     if type == "string":
@@ -34,12 +33,6 @@ def get_random_value(length, type="string"):
     return result_value
 
 
-#driver.get('https://www.tme.hk/en/register')
-#time.sleep(1)
-
-#driver.find_element(By.ID, 'cookies-consent-close-icon').click()
-#time.sleep(1)
-
 field_1 = 'app_company_user_company_name'
 field_2 = 'app_company_user_company_email'
 field_3 = 'app_company_user_company_phoneNumber'
@@ -52,6 +45,22 @@ field_9 = 'app_company_user_customer_phoneNumber'
 field_10 = 'app_company_user_customer_firstName'
 field_11 = 'app_company_user_customer_lastName'
 
-company_name = get_random_value(5, "string")
+company_name = get_random_value(8, "string")
 company_email = f'chinacustomertme+{email_value}@gmail.com'
-company_phone =
+company_phone = get_random_value(12, "number")
+company_city = get_random_value(8, "string")
+company_street = get_random_value(12, "string")
+company_zip = get_random_value(6,"number")
+customer_job = "director"
+customer_email = f'chinacustomertme+{email_value}@gmail.com'
+customer_phone = get_random_value(13, "number")
+customer_name = get_random_value(6, "string")
+customer_surname = get_random_value(7, "string")
+
+insert_query = "INSERT INTO customers (company_name, company_email, company_phone, company_city, company_street, " \
+               "company_zip, customer_job, customer_email, customer_phone, customer_name, customer_surname) VALUES (" \
+               "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+cursor.execute(insert_query, (company_name, company_email, company_phone, company_city, company_street, company_zip,
+                              customer_job, customer_email, customer_phone, customer_name, customer_surname))
+sql.commit()
+sql.close()
