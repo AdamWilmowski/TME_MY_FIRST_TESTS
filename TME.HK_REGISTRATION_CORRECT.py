@@ -15,13 +15,9 @@ driver = webdriver.Chrome(service=driver_service)
 
 sql = sqlite3.connect('TMEHK.db')
 cursor = sql.cursor()
-
-parameter = 'email'
-value = 1
-
-sql_insert_query = "INSERT INTO used_values (parameter, value) VALUES (?, ?)"
-
-cursor.execute(sql_insert_query, (parameter, value))
+cursor.execute("SELECT value FROM used_values WHERE parameter='email';")
+email_value = cursor.fetchone()[0]
+cursor.execute(f"UPDATE used_values SET value = {chosen_value + 1}")
 sql.commit()
 sql.close()
 
@@ -57,3 +53,5 @@ field_10 = 'app_company_user_customer_firstName'
 field_11 = 'app_company_user_customer_lastName'
 
 company_name = get_random_value(5, "string")
+company_email = f'chinacustomertme+{email_value}@gmail.com'
+company_phone =
