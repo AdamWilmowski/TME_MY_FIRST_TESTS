@@ -9,6 +9,8 @@ import string
 import sqlite3
 import imaplib
 import email
+import re
+import os
 
 driver_service = Service(executable_path="C:\Webdriver\chromedriver.exe")
 driver = webdriver.Chrome(service=driver_service)
@@ -32,6 +34,44 @@ def get_random_value(length, type="string"):
         raise ValueError("Invalid type. Use 'string' or 'number'.")
 
     return result_value
+
+
+def get_hyperlinks_from_first_email(username, password, server, mailbox="INBOX"):
+    try:
+        mail = imaplib.IMAP4_SSL(server)
+        mail.login(username, password)
+
+        mail.select(mailbox)
+
+        _, data = mail.search(None, "ALL")
+        email_ids = data[0].split()
+
+        if not email_ids:
+            print("No emails found in the mailbox.")
+            return []
+
+        first_email_id = email_ids[-2]
+        _, msg_data = mail.fetch(first_email_id, "(RFC822)")
+        raw_email = msg_data[0][1]
+
+        msg = email.message_from_bytes(raw_email)
+
+        hyperlinks = []
+
+        for part in msg.walk():
+            if part.get_content_type() == "text/plain":
+                email_content = part.get_payload(decode=True).decode("utf-8")
+
+                links = re.findall(r"\b(https?://\S+)\b", email_content)
+                hyperlinks.extend(links)
+
+        return hyperlinks
+
+    except Exception as e:
+        print("Error:", e)
+
+    finally:
+        mail.logout()
 
 
 field_1 = 'app_company_user_company_name'
@@ -79,10 +119,10 @@ driver.find_element(By.ID, field_11).send_keys(customer_surname)
 driver.find_element(By.ID, radiobutton_1).click()
 time.sleep(10)
 driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/div/form/div[15]/button').click()
-time.sleep(2)
+time.sleep(5)
 
 thank_you_page = driver.current_url
-assert thank_you_page == '---'
+assert thank_you_page == 'https://www.tme.hk/en/register/welcome'
 
 insert_query = "INSERT INTO customers (company_name, company_email, company_phone, company_city, company_street, " \
                "company_zip, customer_job, customer_email, customer_phone, customer_name, customer_surname) VALUES (" \
@@ -92,4 +132,27 @@ cursor.execute(insert_query, (company_name, company_email, company_phone, compan
 sql.commit()
 sql.close()
 
-driver.get()
+for i in range(1, 13):
+    globals()[f"xpath_{i}"] = f"/html/body/div[1]/div[4]/section/div[{i}]/span[2]"
+
+assert driver.find_element(By.XPATH, xpath_1).text == company_name
+assert driver.find_element(By.XPATH, xpath_2).text == company_email
+assert driver.find_element(By.XPATH, xpath_3).text == company_phone
+assert driver.find_element(By.XPATH, xpath_4).text == "China"
+assert driver.find_element(By.XPATH, xpath_5).text == company_city
+assert driver.find_element(By.XPATH, xpath_6).text == company_street
+assert driver.find_element(By.XPATH, xpath_7).text == company_zip
+assert driver.find_element(By.XPATH, xpath_8).text == customer_job
+assert driver.find_element(By.XPATH, xpath_9).text == customer_email
+assert driver.find_element(By.XPATH, xpath_10).text == customer_phone
+assert driver.find_element(By.XPATH, xpath_11).text == customer_name
+assert driver.find_element(By.XPATH, xpath_12).text == customer_surname
+
+username = "adam.wilmowski@zohomail.eu"
+password = os.environ.get("password_1")
+imap_server = "imap.zoho.eu"
+
+hyperlinks = get_hyperlinks_from_first_email(username, password, imap_server)
+hyperlink = hyperlinks[4]
+
+driver.get(hyperlink)
