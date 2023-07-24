@@ -118,8 +118,8 @@ driver.find_element(By.ID, field_10).send_keys(customer_name)
 driver.find_element(By.ID, field_11).send_keys(customer_surname)
 driver.find_element(By.ID, radiobutton_1).click()
 time.sleep(10)
-driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/div/form/div[15]/button').click()
-time.sleep(5)
+driver.find_element(By.XPATH, '//button[text()="Register"]').click()
+time.sleep(3)
 
 thank_you_page = driver.current_url
 assert thank_you_page == 'https://www.tme.hk/en/register/welcome'
@@ -135,18 +135,25 @@ sql.close()
 for i in range(1, 13):
     globals()[f"xpath_{i}"] = f"/html/body/div[1]/div[4]/section/div[{i}]/span[2]"
 
-assert driver.find_element(By.XPATH, xpath_1).text == company_name
-assert driver.find_element(By.XPATH, xpath_2).text == company_email
-assert driver.find_element(By.XPATH, xpath_3).text == company_phone
-assert driver.find_element(By.XPATH, xpath_4).text == "China"
-assert driver.find_element(By.XPATH, xpath_5).text == company_city
-assert driver.find_element(By.XPATH, xpath_6).text == company_street
-assert driver.find_element(By.XPATH, xpath_7).text == company_zip
-assert driver.find_element(By.XPATH, xpath_8).text == customer_job
-assert driver.find_element(By.XPATH, xpath_9).text == customer_email
-assert driver.find_element(By.XPATH, xpath_10).text == customer_phone
-assert driver.find_element(By.XPATH, xpath_11).text == customer_name
-assert driver.find_element(By.XPATH, xpath_12).text == customer_surname
+thank_you_check = [driver.find_element(By.XPATH, xpath_1).text == company_name,
+        driver.find_element(By.XPATH, xpath_2).text == company_email,
+        driver.find_element(By.XPATH, xpath_3).text == company_phone,
+        driver.find_element(By.XPATH, xpath_4).text == "China",
+        driver.find_element(By.XPATH, xpath_5).text == company_city,
+        driver.find_element(By.XPATH, xpath_6).text == company_street,
+        driver.find_element(By.XPATH, xpath_7).text == company_zip,
+        driver.find_element(By.XPATH, xpath_8).text == customer_job,
+        driver.find_element(By.XPATH, xpath_9).text == customer_email,
+        driver.find_element(By.XPATH, xpath_10).text == customer_phone,
+        driver.find_element(By.XPATH, xpath_11).text == customer_name,
+        driver.find_element(By.XPATH, xpath_12).text == customer_surname]
+
+if all(thank_you_check):
+    print('THANK YOU PAGE OK')
+else:
+    print('THANK YOU PAGE NOK')
+
+time.sleep(15)
 
 username = "adam.wilmowski@zohomail.eu"
 password = os.environ.get("password_1")
@@ -156,3 +163,40 @@ hyperlinks = get_hyperlinks_from_first_email(username, password, imap_server)
 hyperlink = hyperlinks[4]
 
 driver.get(hyperlink)
+time.sleep(2)
+
+assert driver.find_element(By.XPATH, "/html/body/div[1]/section[2]/div/header/h1").text == r'%.+Set a password'
+driver.find_element(By.ID, 'app_user_set_password_password_first').send_keys(os.environ.get("password_2"))
+driver.find_element(By.ID, 'app_user_set_password_password_second').send_keys(os.environ.get("password_2"))
+driver.find_element(By.XPATH, '//button[text()="Save"]').send_keys(Keys.ENTER)
+time.sleep(2)
+
+assert driver.current_url == 'https://www.tme.hk/en/login'
+driver.find_element(By.ID, '_username').send_keys(customer_email)
+driver.find_element(By.ID, '_password').send_keys(os.environ.get("password_2"))
+driver.find_element(By.ID, '_password').send_keys(Keys.ENTER)
+driver.find_element(By.XPATH, '//button[text()="Login"]').send_keys(Keys.ENTER)
+time.sleep(2)
+
+assert driver.current_url == 'https://www.tme.hk/en/account/agreements'
+assert driver.find_element(By.XPATH, '/html/body/div[1]/header/div[1]/div/div/div/div/div/div[2]').text == customer_name
+
+driver.get('https://www.tme.hk/en/account/dashboard')
+
+for i in range(1, 4):
+    globals()[f"data_xpath_{i}"] = f'//*[@id="customer-information"]/div[2]/table/tbody/tr[{i}]/td[2]'
+
+if driver.find_element(By.XPATH, data_xpath_1).text == company_name:
+    print("COMPANY NAME CORRECT")
+else:
+    print("COMPANY NAME INCORRECT")
+
+if driver.find_element(By.XPATH, data_xpath_2).text == company_email:
+    print('COMPANY EMAIL CORRECT')
+else:
+    print('COMPANY EMAIL INCORRECT')
+
+if driver.find_element(By.XPATH, data_xpath_3).text ==
+
+
+
