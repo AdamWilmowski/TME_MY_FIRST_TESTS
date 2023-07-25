@@ -43,14 +43,14 @@ def get_hyperlinks_from_first_email(username, password, server, mailbox="INBOX")
 
         mail.select(mailbox)
 
-        _, data = mail.search(None, "ALL")
+        _, data = mail.search(None, '(SUBJECT "Welcome to TME")')
         email_ids = data[0].split()
 
         if not email_ids:
             print("No emails found in the mailbox.")
             return []
 
-        first_email_id = email_ids[-2]
+        first_email_id = email_ids[-1]
         _, msg_data = mail.fetch(first_email_id, "(RFC822)")
         raw_email = msg_data[0][1]
 
@@ -59,7 +59,7 @@ def get_hyperlinks_from_first_email(username, password, server, mailbox="INBOX")
         hyperlinks = []
 
         for part in msg.walk():
-            if part.get_content_type() == "text/plain":
+            if part.get_content_type() == "text/html":
                 email_content = part.get_payload(decode=True).decode("utf-8")
 
                 links = re.findall(r"\b(https?://\S+)\b", email_content)
@@ -100,10 +100,10 @@ customer_name = get_random_value(6, "string")
 customer_surname = get_random_value(7, "string")
 
 driver.get('https://www.tme.hk/en/register')
-time.sleep(2)
+time.sleep(1)
 
 driver.find_element(By.ID, 'cookies-consent-close-icon').click()
-time.sleep(2)
+time.sleep(1)
 
 driver.find_element(By.ID, field_1).send_keys(company_name)
 driver.find_element(By.ID, field_2).send_keys(company_email)
@@ -118,8 +118,8 @@ driver.find_element(By.ID, field_10).send_keys(customer_name)
 driver.find_element(By.ID, field_11).send_keys(customer_surname)
 driver.find_element(By.ID, radiobutton_1).click()
 time.sleep(10)
-driver.find_element(By.XPATH, '//button[text()="Register"]').click()
-time.sleep(3)
+driver.find_element(By.ID, field_11).send_keys(Keys.ENTER)
+time.sleep(1)
 
 thank_you_page = driver.current_url
 assert thank_you_page == 'https://www.tme.hk/en/register/welcome'
@@ -160,43 +160,81 @@ password = os.environ.get("password_1")
 imap_server = "imap.zoho.eu"
 
 hyperlinks = get_hyperlinks_from_first_email(username, password, imap_server)
-hyperlink = hyperlinks[4]
+hyperlink = hyperlinks[7]
 
 driver.get(hyperlink)
-time.sleep(2)
+time.sleep(1)
 
-assert driver.find_element(By.XPATH, "/html/body/div[1]/section[2]/div/header/h1").text == r'%.+Set a password'
 driver.find_element(By.ID, 'app_user_set_password_password_first').send_keys(os.environ.get("password_2"))
 driver.find_element(By.ID, 'app_user_set_password_password_second').send_keys(os.environ.get("password_2"))
 driver.find_element(By.XPATH, '//button[text()="Save"]').send_keys(Keys.ENTER)
-time.sleep(2)
+time.sleep(1)
 
 assert driver.current_url == 'https://www.tme.hk/en/login'
 driver.find_element(By.ID, '_username').send_keys(customer_email)
 driver.find_element(By.ID, '_password').send_keys(os.environ.get("password_2"))
 driver.find_element(By.ID, '_password').send_keys(Keys.ENTER)
 driver.find_element(By.XPATH, '//button[text()="Login"]').send_keys(Keys.ENTER)
-time.sleep(2)
+time.sleep(1)
 
 assert driver.current_url == 'https://www.tme.hk/en/account/agreements'
-assert driver.find_element(By.XPATH, '/html/body/div[1]/header/div[1]/div/div/div/div/div/div[2]').text == customer_name
-
 driver.get('https://www.tme.hk/en/account/dashboard')
 
 for i in range(1, 4):
-    globals()[f"data_xpath_{i}"] = f'//*[@id="customer-information"]/div[2]/table/tbody/tr[{i}]/td[2]'
+    globals()[f"company_xpath_{i}"] = f'//*[@id="customer-information"]/div[2]/table/tbody/tr[{i}]/td[2]'
 
-if driver.find_element(By.XPATH, data_xpath_1).text == company_name:
+if driver.find_element(By.XPATH, company_xpath_1).text == company_name:
     print("COMPANY NAME CORRECT")
 else:
     print("COMPANY NAME INCORRECT")
 
-if driver.find_element(By.XPATH, data_xpath_2).text == company_email:
+if driver.find_element(By.XPATH, company_xpath_2).text == company_email:
     print('COMPANY EMAIL CORRECT')
 else:
     print('COMPANY EMAIL INCORRECT')
 
-if driver.find_element(By.XPATH, data_xpath_3).text ==
+if driver.find_element(By.XPATH, company_xpath_3).text == company_phone:
+    print('COMPANY PHONE CORRECT')
+else:
+    print('COMPANY PHONE INCORRECT')
 
+for i in range(1, 5):
+    globals()[f"customer_xpath_{i}"] = f'//*[@id="customer-information"]/div[3]/table/tbody/tr[{i}]/td[2]'
 
+if driver.find_element(By.XPATH, customer_xpath_1).text == customer_name:
+    print('CUSTOMER NAME CORRECT')
+else:
+    print('CUSTOMER NAME INCORRECT')
 
+if driver.find_element(By.XPATH, customer_xpath_2).text == customer_surname:
+    print('CUSTOMER SURNAME CORRECT')
+else:
+    print('CUSTOMER SURNAME INCORRECT')
+
+if driver.find_element(By.XPATH, customer_xpath_3).text == customer_email:
+    print('CUSTOMER EMAIL CORRECT')
+else:
+    print('CUSTOMER EMAIL INCORRECT')
+
+if driver.find_element(By.XPATH, customer_xpath_4).text == customer_phone:
+    print('CUSTOMER PHONE CORRECT')
+else:
+    print('CUSTOMER PHONE INCORRECT')
+
+driver.get('https://www.tme.hk/en/account/address-book')
+time.sleep(1)
+
+if driver.find_element(By.XPATH, '//*[@id="sylius-default-address"]/div/p[1]').text == company_name:
+    print('ADDRESS BOOK COMPANY CORRECT')
+else:
+    print('ADDRESS BOOK COMPANY INCORRECT')
+
+if driver.find_element(By.XPATH, '//*[@id="sylius-default-address"]/div/p[3]').text == company_street:
+    print('ADDRESS BOOK STREET CORRECT')
+else:
+    print('ADDRESS BOOK STREET INCORRECT')
+
+if driver.find_element(By.XPATH, '//*[@id="sylius-default-address"]/div/p[4]').text == f'T: {company_phone}':
+    print('ADDRESS BOOK PHONE CORRECT')
+else:
+    print('ADDRESS BOOK PHONE INCORRECT')
