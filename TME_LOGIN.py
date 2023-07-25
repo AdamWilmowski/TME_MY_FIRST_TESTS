@@ -1,3 +1,5 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -37,9 +39,9 @@ except NoSuchElementException:
 driver.find_element(By.ID, '_password').send_keys(Keys.ENTER)
 driver.find_element(By.ID, '_password').send_keys(Keys.ENTER)
 
-try:
-    captcha = driver.find_element(By.ID, r'captcha_\S+')
+#try:
+    #captcha = driver.find_element(By.ID, r'captcha_\S+')
 
-except NoSuchElementException:
-    print('NO CAPTCHA FOUND')
+#except NoSuchElementException:
+    #print('NO CAPTCHA FOUND')
 
